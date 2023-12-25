@@ -1,5 +1,5 @@
 /* CWebPage.c
- 
+
 This is a Win32 C application (ie, no MFC, WTL, nor even any C++ -- just plain C) that demonstrates
 how to embed a browser "control" (actually, an OLE object) in your own window (in order to display a
 web page, or an HTML file on disk).
@@ -216,6 +216,7 @@ HRESULT STDMETHODCALLTYPE Site_OnPosRectChange(IOleInPlaceSite FAR* This, LPCREC
 // IOleInPlaceSite structure.
 #pragma warning (push)
 #pragma warning(disable : 4028)
+#pragma warning(disable : 4113)
 IOleInPlaceSiteVtbl MyIOleInPlaceSiteTable =  {Site_QueryInterface,	// This gives a compiler warning because we're using
 															// the same function as the MyIOleClientSiteTable uses.
 															// And the first arg to that Site_QueryInterface() is
@@ -455,7 +456,7 @@ HRESULT STDMETHODCALLTYPE Site_QueryInterface(IOleClientSite FAR* This, REFIID r
 	// _IOleClientSiteEx is an embedded IOleClientSite, so the browser doesn't mind. We want the browser
 	// to continue passing our _IOleClientSiteEx pointer wherever it would normally pass a IOleClientSite
 	// pointer.
-	// 
+	//
 	// The IUnknown interface uses the same VTable as the first object in our _IOleClientSiteEx
 	// struct (which happens to be an IOleClientSite). So if the browser is asking us to match
 	// IID_IUnknown, then we'll also return a pointer to our _IOleClientSiteEx.
@@ -794,7 +795,7 @@ void UnEmbedBrowserObject(HWND hwnd)
  */
 
 long DisplayHTMLStr(HWND hwnd, LPCTSTR string)
-{	
+{
 	IWebBrowser2	*webBrowser2;
 	LPDISPATCH		lpDispatch;
 	IHTMLDocument2	*htmlDoc2;
@@ -973,7 +974,7 @@ long DisplayHTMLPage(HWND hwnd, LPTSTR webPageName)
 		if (!myURL.bstrVal)
 		{
 #ifndef UNICODE
-			badalloc:	
+			badalloc:
 #endif
 			webBrowser2->lpVtbl->Release(webBrowser2);
 			return(-6);
@@ -1051,7 +1052,7 @@ long EmbedBrowserObject(HWND hwnd)
 	// One final thing. We're going to allocate extra room to store the pointer to the browser object.
 	if (!(ptr = (char *)GlobalAlloc(GMEM_FIXED, sizeof(IOleInPlaceFrameEx) + sizeof(_IOleClientSiteEx) + sizeof(IOleObject *))))
 		return(-1);
-	
+
 	// Initialize our IOleInPlaceFrame object with a pointer to our IOleInPlaceFrame VTable.
 	iOleInPlaceFrameEx = (IOleInPlaceFrameEx *)(ptr + sizeof(IOleObject *));
 	iOleInPlaceFrameEx->frame.lpVtbl = &MyIOleInPlaceFrameTable;
@@ -1071,7 +1072,7 @@ long EmbedBrowserObject(HWND hwnd)
 
 	// Get a pointer to the browser object and lock it down (so it doesn't "disappear" while we're using
 	// it in this program). We do this by calling the OS function OleCreate().
-	//	
+	//
 	// NOTE: We need this pointer to interact with and control the browser. With normal WIN32 controls such as a
 	// Static, Edit, Combobox, etc, you obtain an HWND and send messages to it with SendMessage(). Not so with
 	// the browser object. You need to get a pointer to its "base structure" (as returned by OleCreate()). This
@@ -1107,7 +1108,7 @@ long EmbedBrowserObject(HWND hwnd)
 		// application's name and the name of the document in which we're embedding the browser. (Since we have no
 		// document name, we'll pass a 0 for the latter). When the browser object is opened for editing, it displays
 		// these names in its titlebar.
-		//	
+		//
 		// We are passing 3 args to SetHostNames. You'll note that the first arg to SetHostNames is the base
 		// address of our browser control. This is something that you always have to remember when working in C
 		// (as opposed to C++). When calling a VTable function, the first arg to that function must always be the
